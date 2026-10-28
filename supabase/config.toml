@@ -1,0 +1,2 @@
+[functions.submit-intake]
+verify_jwt = false  # Solo formulario público; Turnstile validado en el servidor
