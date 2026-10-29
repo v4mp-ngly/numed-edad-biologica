@@ -22,8 +22,42 @@ const scriptLoad=url=>new Promise((resolve,reject)=>{const x=document.createElem
 banner.classList.add('online');
 banner.textContent='';
 scriptLoad('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.8/dist/umd/supabase.min.js')
- .then(()=>{sb=window.supabase.createClient(conf.supabaseUrl,conf.supabaseAnonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});render()})
- .catch(e=>{console.error(e);banner.classList.add('error');banner.textContent='No se pudo cargar la conexión con NUMED. Revisa tu internet y vuelve a intentarlo.'});
+  .then(async () => {
+    sb = window.supabase.createClient(conf.supabaseUrl, conf.supabaseAnonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
+
+    sb.auth.onAuthStateChange(async (_event, session) => {
+      authUser = session?.user || null;
+
+      const view = new URLSearchParams(location.search).get('view');
+      if (authUser && view === 'portal' && location.hash !== '#/portal') {
+        history.replaceState({}, '', `${location.pathname}?view=portal#/portal`);
+      }
+
+      await render();
+    });
+
+    const { data: { session } } = await sb.auth.getSession();
+    authUser = session?.user || null;
+
+    const view = new URLSearchParams(location.search).get('view');
+    if (authUser && view === 'portal' && location.hash !== '#/portal') {
+      history.replaceState({}, '', `${location.pathname}?view=portal#/portal`);
+    }
+
+    render();
+  })
+  .catch(e => {
+    console.error(e);
+    banner.classList.add('error');
+    banner.textContent = 'No se pudo cargar la conexión con NUMED. Revisa tu internet y vuelve a intentarlo.';
+  });
+
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const $=s=>document.querySelector(s);const format=n=>Number(n).toLocaleString('es-DO',{maximumFractionDigits:1});
 const calcAge=s=>{const a=String(s).split('-').map(Number);if(a.length!==3||!a.every(Number.isFinite))return NaN;const d=new Date(a[0],a[1]-1,a[2]);if(d.getFullYear()!==a[0]||d.getMonth()!==a[1]-1||d.getDate()!==a[2])return NaN;const now=new Date();return now.getFullYear()-a[0]-(now.getMonth()<a[1]-1||now.getMonth()===a[1]-1&&now.getDate()<a[2]?1:0)};
@@ -193,7 +227,27 @@ async function formSubmit(e){const f=e.target;e.preventDefault();if(f.id==='regi
  else if(f.id==='question-step'){if(!validated(QUESTIONS[quizIndex]))return;if(quizIndex<QUESTIONS.length-1){quizIndex++;render()}else await finalize()}
  else if(f.id==='staff-login'){if(!sb)return;const d=new FormData(f);const {error}=await sb.auth.signInWithPassword({email:String(d.get('email')),password:String(d.get('password'))});if(error){toast('No se pudo iniciar sesión. Verifica correo y contraseña.');return}await checkStaff();if(!staffUser){toast('Tu cuenta no tiene permiso de personal médico.');return}await render()}
  else if(f.id==='metrics-form'){const id=f.dataset.id,r=medicalRows.find(x=>x.id===id),d=new FormData(f);if(!r)return;const m={weight:Number(d.get('weight')),height:Number(d.get('height')),strength:Number(d.get('strength')),waist:Number(d.get('waist'))};if(!(m.weight>=25&&m.weight<=350&&m.height>=100&&m.height<=250&&m.strength>=0&&m.strength<=150&&m.waist>=30&&m.waist<=250)){toast('Revisa los rangos de las mediciones.');return};{const {error}=await sb.from('eb_mediciones').upsert({evaluacion_id:id,peso_kg:m.weight,talla_cm:m.height,fuerza_kg:m.strength,perimetro_abdominal_cm:m.waist,registrado_por:authUser.id},{onConflict:'evaluacion_id'});if(error){console.error(error);toast('Error al guardar las mediciones.');return};toast('Mediciones guardadas correctamente.');await render()}}
- else if(f.id==='portal-signin'){if(!sb)return;const email=String(new FormData(f).get('email'));const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname+'?view=portal',shouldCreateUser:true}});if(error){toast('No se pudo enviar el enlace.');return};toast('Revisa tu correo y abre el enlace de acceso seguro.')}
+else if(f.id==='portal-signin'){
+  if(!sb)return;
+
+  const email = String(new FormData(f).get('email')).trim().toLowerCase();
+  const redirectTo = `${location.origin}${location.pathname}?view=portal`;
+
+  const { error } = await sb.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: redirectTo,
+      shouldCreateUser: true
+    }
+  });
+
+  if(error){
+    toast('No se pudo enviar el enlace.');
+    return;
+  }
+
+  toast('Revisa tu correo y abre el enlace de acceso seguro.');
+}
 }
 async function buttonClick(e){const b=e.target.closest('button');if(!b)return;
  if(b.id==='quiz-back'){if(quizIndex===0){go('registro')}else{quizIndex--;render()}}
