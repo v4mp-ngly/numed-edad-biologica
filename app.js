@@ -91,23 +91,89 @@ async function finalize(){
   try{if(captchaWidget!==null)window.turnstile?.reset(captchaWidget)}catch{}
  }finally{sending=false;if(submit?.isConnected){submit.disabled=false;submit.textContent='Finalizar cuestionario'}}
 }
-async function setupTurnstile(){
- if(!document.getElementById('turnstile-widget'))return;
- try{if(captchaWidget!==null)window.turnstile?.remove(captchaWidget)}catch{}
- captchaToken='';captchaWidget=null;
- if(!conf.turnstileSiteKey||conf.turnstileSiteKey==='CONFIGURAR_SITE_KEY'){
-  document.getElementById('captcha-message').textContent='Verificación no configurada. Contacta con recepción de NUMED.';return;
- }
- try{
-  if(!window.turnstile)await scriptLoad('https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit');
-  if(!document.getElementById('turnstile-widget'))return;
-  window.turnstile.ready(()=>{
-   if(!document.getElementById('turnstile-widget'))return;
-   captchaWidget=window.turnstile.render('#turnstile-widget',{sitekey:conf.turnstileSiteKey,theme:'light',
-    callback:token=>{captchaToken=token},'expired-callback':()=>{captchaToken=''},'error-callback':()=>{captchaToken=''}});
-  });
- }catch(e){console.error(e);const node=document.getElementById('captcha-message');if(node)node.textContent='No se pudo cargar la verificación. Revisa tu conexión.'}
+
+async function setupTurnstile() {
+  const container = document.getElementById('turnstile-widget');
+  if (!container) return;
+
+  // Eliminar cualquier verificación anterior.
+  try {
+    if (captchaWidget !== null) {
+      window.turnstile?.remove(captchaWidget);
+    }
+  } catch (error) {
+    console.warn('No se pudo eliminar el widget anterior:', error);
+  }
+
+  captchaWidget = null;
+  captchaToken = '';
+
+  if (
+    !conf.turnstileSiteKey ||
+    conf.turnstileSiteKey === 'CONFIGURAR_SITE_KEY'
+  ) {
+    const message = document.getElementById('captcha-message');
+    if (message) {
+      message.textContent = 'Verificación de seguridad no configurada.';
+    }
+    return;
+  }
+
+  try {
+    // Cargar Cloudflare solamente cuando sea necesario.
+    if (!window.turnstile) {
+      await scriptLoad(
+        'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'
+      );
+    }
+
+    // El script ya terminó de cargarse:
+    // NO utilizar turnstile.ready().
+    if (
+      !window.turnstile ||
+      !document.getElementById('turnstile-widget')
+    ) {
+      return;
+    }
+
+    captchaWidget = window.turnstile.render(
+      '#turnstile-widget',
+      {
+        sitekey: conf.turnstileSiteKey,
+        theme: 'light',
+
+        callback: (token) => {
+          captchaToken = token;
+        },
+
+        'expired-callback': () => {
+          captchaToken = '';
+        },
+
+        'error-callback': (errorCode) => {
+          captchaToken = '';
+          console.error('Cloudflare Turnstile:', errorCode);
+
+          const message = document.getElementById('captcha-message');
+          if (message) {
+            message.textContent =
+              'No se pudo completar la verificación de seguridad.';
+          }
+        }
+      }
+    );
+
+  } catch (error) {
+    console.error('Error al cargar Turnstile:', error);
+
+    const message = document.getElementById('captcha-message');
+    if (message) {
+      message.textContent =
+        'No se pudo cargar la verificación. Intenta actualizar la página.';
+    }
+  }
 }
+
 async function formSubmit(e){const f=e.target;e.preventDefault();if(f.id==='register-form'){if(!f.reportValidity())return;const d=new FormData(f),first=String(d.get('first')||'').trim(),last=String(d.get('last')||'').trim(),dob=String(d.get('dob')||''),idcard=String(d.get('idcard')||'').replace(/\D/g,''),phone=String(d.get('phone')||'').replace(/\D/g,''),email=String(d.get('email')||'').trim().toLowerCase();if(first.length<2||last.length<2||!Number.isInteger(calcAge(dob))||calcAge(dob)<18||calcAge(dob)>115||idcard.length!==11||phone.length<10||phone.length>15){toast('Revisa nombre, edad, cédula y WhatsApp.');return}if(!d.get('consent')){toast('Es necesario aceptar el consentimiento para continuar.');return}draft={first,last,dob,idcard:`${idcard.slice(0,3)}-${idcard.slice(3,10)}-${idcard[10]}`,phone,email};quizIndex=0;answerDraft={};submissionId=crypto.randomUUID();go('preguntas')}
  else if(f.id==='question-step'){if(!validated(QUESTIONS[quizIndex]))return;if(quizIndex<QUESTIONS.length-1){quizIndex++;render()}else await finalize()}
  else if(f.id==='staff-login'){if(!sb)return;const d=new FormData(f);const {error}=await sb.auth.signInWithPassword({email:String(d.get('email')),password:String(d.get('password'))});if(error){toast('No se pudo iniciar sesión. Verifica correo y contraseña.');return}await checkStaff();if(!staffUser){toast('Tu cuenta no tiene permiso de personal médico.');return}await render()}
