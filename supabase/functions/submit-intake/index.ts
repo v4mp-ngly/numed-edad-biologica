@@ -4,14 +4,21 @@
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const URL = Deno.env.get('SUPABASE_URL')!;
+const SUPABASE_PROJECT_URL = Deno.env.get('SUPABASE_URL')!;
 const SECRET = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const origins = (Deno.env.get('ALLOWED_ORIGINS') || '').split(',').map(x=>x.trim()).filter(Boolean);
 const devOrigin = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
 const allowDev = Deno.env.get('ALLOW_LOCAL_DEV') === 'true';
 const turnstileSecret = Deno.env.get('TURNSTILE_SECRET') || '';
 const consentVersion = Deno.env.get('CONSENT_VERSION') || ''; 
-const supa = createClient(URL, SECRET, { auth:{persistSession:false,autoRefreshToken:false} });
+
+const supa = createClient(SUPABASE_PROJECT_URL, SECRET, {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false
+  }
+});
+
 const required = ['actividad','sentado','sueno','descanso','frutas','procesados','agua','tabaco','alcohol','estres'];
 function validAnswers(a:unknown):boolean {
  if(!a || typeof a!=='object' || Array.isArray(a))return false;
