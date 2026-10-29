@@ -1,58 +1,267 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#114C76">
-<title>NUMED · Privacidad y consentimiento informado</title>
-<style>
-:root{--blue:#114C76;--green:#AACA41;--ink:#173950;--muted:#587387;--line:#dce7ed;--bg:#f5f8fb}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 Montserrat,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}a{color:var(--blue)}.wrap{max-width:940px;margin:auto;padding:20px 20px 80px}.top{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 0 26px}.logo{width:210px;max-width:57%;height:auto;object-fit:contain}.back{font-weight:700;text-decoration:none;border:1px solid var(--blue);padding:9px 16px;border-radius:12px;font-size:13px}.card{background:white;border:1px solid var(--line);border-radius:24px;padding:clamp(25px,5vw,56px);box-shadow:0 8px 34px #114c7609}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.16em;font-weight:800;color:#638c3d}h1{font-size:clamp(28px,5vw,43px);line-height:1.13;color:var(--blue);margin:12px 0 14px}h2{font-size:21px;line-height:1.35;color:var(--blue);margin:32px 0 10px}p{margin:10px 0 14px}.intro{color:var(--muted);font-size:16px}.flag{background:#fff8e8;border-left:4px solid #c08a2a;border-radius:9px;padding:14px 18px;margin:25px 0;font-size:14px}.summary{background:#f0f7f3;border:1px solid #d8e9d8;border-radius:14px;padding:20px 23px;margin:20px 0}.summary strong{color:var(--blue)}ul{padding-left:22px;margin:10px 0}li{margin:8px 0}.subtle{font-size:13px;color:var(--muted)}.tag{font-weight:800;color:var(--blue)}.meta{padding:16px 18px;background:#f6f9fb;border-radius:12px;font-size:14px}.pill{display:inline-block;border-radius:99px;background:#e8f2d6;color:#3d651c;font-size:12px;font-weight:800;padding:4px 10px}.signoff{border-top:1px solid var(--line);margin-top:30px;padding-top:20px}.footer{color:var(--muted);font-size:12px;text-align:center;margin-top:28px}@media(max-width:560px){.wrap{padding:12px 12px 65px}.top{padding:10px 2px 20px}.logo{width:170px}.back{font-size:12px;padding:8px 12px}.card{border-radius:17px;padding:24px 18px}h2{font-size:19px}}@media print{body{background:white}.wrap{padding:0;max-width:none}.card{box-shadow:none;border:none;padding:0}.back,.flag{display:none}h2{break-after:avoid}p,li{orphans:3;widows:3}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#114C76">
+  <title>NUMED | Privacidad y consentimiento</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      --numed-blue: #114C76;
+      --numed-green: #AACA41;
+    }
+    body {
+      margin: 0;
+      background: #F5F8FC;
+      color: #173C59;
+      font-family: 'Montserrat', Arial, sans-serif;
+    }
+    .privacy-wrap {
+      width: min(820px, 92%);
+      margin: 32px auto 70px;
+    }
+    .privacy-logo {
+      width: 195px;
+      max-width: 70%;
+      display: block;
+      margin-bottom: 24px;
+    }
+    .privacy-card {
+      background: white;
+      border: 1px solid #E1EAF1;
+      border-radius: 22px;
+      padding: clamp(24px, 5vw, 44px);
+    }
+    .privacy-label {
+      color: #6384A0;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+    .privacy-card h1 {
+      color: var(--numed-blue);
+      font-size: clamp(25px, 5vw, 36px);
+      line-height: 1.2;
+      margin: 14px 0;
+    }
+    .privacy-card h2 {
+      color: var(--numed-blue);
+      font-size: 18px;
+      margin: 28px 0 10px;
+    }
+    .privacy-card p,
+    .privacy-card li {
+      font-size: 14px;
+      line-height: 1.85;
+      color: #55728B;
+    }
+    .privacy-intro {
+      margin-bottom: 24px;
+    }
+    .consent-box {
+      background: #F5FAED;
+      border: 1px solid #D8E7B5;
+      border-radius: 16px;
+      padding: 22px;
+    }
+    .consent-box p {
+      color: #244660;
+    }
+    details {
+      border: 1px solid #E1EAF1;
+      border-radius: 12px;
+      padding: 17px;
+      margin-top: 12px;
+    }
+    summary {
+      cursor: pointer;
+      color: var(--numed-blue);
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .version {
+      margin-top: 24px;
+      font-size: 12px;
+      color: #7891A5;
+    }
+    .privacy-back {
+      display: inline-block;
+      background: var(--numed-blue);
+      color: white !important;
+      text-decoration: none;
+      border-radius: 11px;
+      padding: 14px 22px;
+      margin-top: 24px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
-<main class="wrap">
-<header class="top"><img class="logo" src="assets/logo-numed.png" alt="NUMED"><a class="back" href="index.html#/registro">← Volver al registro</a></header>
-<article class="card">
-<div class="eyebrow">Protección de datos · Evaluación integral</div>
-<h1>Aviso de privacidad y consentimiento informado</h1>
-<p class="intro">Queremos que conozcas qué información recopilamos, para qué la utilizamos y qué significa participar en la evaluación de salud y edad biológica de NUMED.</p>
-<div class="flag"><strong>Documento para revisión institucional.</strong> Antes de utilizarlo con pacientes, NUMED debe completar los campos señalados y obtener aprobación clínica y legal. Versión propuesta: <strong>EB-2026-01-BORRADOR</strong>.</div>
-<div class="summary"><strong>En pocas palabras:</strong> al participar completarás un formulario de salud y un profesional podrá realizar mediciones físicas. Tus datos se manejarán como información confidencial de salud. La evaluación es voluntaria y cualquier estimación de edad biológica será orientativa, no una edad legal ni un diagnóstico por sí sola.</div>
-<h2>1. ¿Quién es responsable de tus datos?</h2>
-<p><strong>Responsable:</strong> [RAZÓN SOCIAL COMPLETA DE NUMED].<br><strong>Dirección:</strong> [DOMICILIO OFICIAL].<br><strong>Contacto para privacidad y derechos:</strong> [CORREO INSTITUCIONAL Y/O TELÉFONO].</p>
-<h2>2. ¿Qué información recopilamos?</h2>
-<ul><li><strong>Identificación y contacto:</strong> nombres, apellidos, fecha de nacimiento, edad cronológica, cédula, WhatsApp y correo electrónico.</li><li><strong>Hábitos y bienestar:</strong> respuestas sobre actividad física, sueño, alimentación, tabaco, alcohol y estrés.</li><li><strong>Antecedentes de salud:</strong> enfermedades crónicas personales y familiares que declares voluntariamente.</li><li><strong>Mediciones clínicas:</strong> peso, talla, índice de masa corporal, fuerza muscular y perímetro abdominal registrados por personal autorizado.</li><li><strong>Constancia de consentimiento:</strong> versión del documento aceptada y fecha y hora del registro. [CONFIRMAR SI SE GUARDAN OTROS DATOS TÉCNICOS].</li></ul>
-<p class="subtle">Esta información puede incluir datos sensibles de salud y requiere especial confidencialidad y protección.</p>
-<h2>3. ¿Para qué utilizamos la información?</h2>
-<ul><li>Identificar tu evaluación y vincular tus respuestas con las mediciones médicas.</li><li>Realizar una revisión integral de hábitos y factores relacionados con la salud.</li><li>Preparar un expediente e informe, cuando corresponda y sea revisado por personal clínico.</li><li>Facilitar el seguimiento de tus evaluaciones y el acceso protegido a resultados, si se habilita tu portal.</li></ul>
-<p><strong>No se autoriza automáticamente</strong> el uso de tus datos para publicidad, campañas de WhatsApp, publicación de fotos, investigación identificable ni su entrega a empleadores o terceros. Esas finalidades, si se proponen, requerirán información y una autorización diferenciada cuando corresponda.</p>
-<h2>4. ¿En qué consiste la evaluación?</h2>
-<p>Primero escaneas el código QR, completas tus datos y respondes el cuestionario. Posteriormente, un integrante autorizado del equipo médico registra las mediciones físicas. Los resultados se revisan clínicamente antes de ser comunicados.</p>
-<p>La evaluación descrita no incluye por sí sola procedimientos invasivos, análisis de laboratorio ni tratamientos. Si se proponen otros procedimientos, deberán explicarse y consentirse por separado según corresponda.</p>
-<h2>5. Edad cronológica y edad biológica</h2>
-<p>La <strong>edad cronológica</strong> corresponde al tiempo transcurrido desde tu nacimiento y es la referencia utilizada para verificar la mayoría de edad y las condiciones legales de participación.</p>
-<p>La <strong>edad biológica</strong> es una estimación relacionada con determinados indicadores de salud, cuya interpretación depende del método empleado y de sus limitaciones. <strong>No modifica tu edad cronológica, no acredita capacidad legal, no determina tu aptitud para consentir y no sustituye el diagnóstico ni el criterio médico.</strong></p>
-<p>NUMED solo deberá presentar una cifra de edad biológica si existe un método clínicamente validado y aprobado, con su versión y limitaciones documentadas. Hasta entonces, el resultado permanecerá pendiente.</p>
-<h2>6. Participación voluntaria y límites</h2>
-<p>Tu participación es voluntaria. Puedes solicitar aclaraciones antes de aceptar y negarte a participar. La ausencia de respuesta o el rechazo del consentimiento impedirá procesar este registro específico, sin constituir por sí mismo una autorización para otras decisiones de atención.</p>
-<p>La información que declares debe ser lo más precisa posible. Los resultados son orientativos y deben interpretarse junto con tu historia clínica y evaluación profesional.</p>
-<h2>7. ¿Quién podrá consultar tus datos?</h2>
-<p>Accederá únicamente el personal de NUMED autorizado conforme a sus funciones y a las medidas de control de acceso. Si se habilita el portal, podrás consultar tu información mediante una cuenta verificada y bajo las condiciones del sistema.</p>
-<p>El <strong>código QR público</strong> sirve para abrir el formulario y no concede acceso a expedientes clínicos. El código de recepción tampoco debe utilizarse como contraseña.</p>
-<h2>8. Proveedores tecnológicos y almacenamiento</h2>
-<p>La plataforma utiliza servicios tecnológicos para alojar la interfaz, gestionar registros y prevenir envíos automatizados, incluidos GitHub Pages, Supabase y Cloudflare Turnstile. NUMED debe verificar contractualmente sus funciones, ubicaciones de tratamiento, mecanismos de seguridad y posibles transferencias internacionales antes del uso con pacientes reales.</p>
-<p><strong>Transferencias y destinatarios:</strong> [DETALLAR Y APROBAR SEGÚN LAS CONFIGURACIONES Y CONTRATOS VIGENTES].</p>
-<h2>9. Conservación, protección y derechos</h2>
-<p>NUMED debe definir y comunicar un plazo de conservación acorde con sus obligaciones clínicas y legales: <strong>[PLAZO Y CRITERIOS DE ELIMINACIÓN O ARCHIVO]</strong>.</p>
-<p>Puedes solicitar información sobre el tratamiento de tus datos y ejercer los derechos que te correspondan, incluyendo acceso, rectificación y las solicitudes de supresión u oposición que procedan legalmente. Para hacerlo, comunícate a <strong>[CANAL DE PRIVACIDAD CONFIRMADO]</strong>. Algunas solicitudes pueden estar sujetas a obligaciones de conservación del expediente clínico.</p>
-<h2>10. Personas menores de edad</h2>
-<p>Esta versión del formulario está diseñada <strong>exclusivamente para personas de 18 años o más</strong>, tomando como referencia la fecha de nacimiento. La edad biológica no puede utilizarse para cambiar este requisito. La evaluación de menores requeriría un procedimiento y consentimiento específico conforme a la normativa aplicable.</p>
-<h2>11. Declaración de consentimiento</h2>
-<div class="meta"><p>Antes de enviar el formulario, la persona deberá confirmar de forma expresa:</p><ul><li>Que recibió información clara sobre el alcance y las limitaciones de la evaluación.</li><li>Que acepta voluntariamente participar en el registro, cuestionario y mediciones descritos.</li><li>Que autoriza el tratamiento de sus datos personales y de salud para las finalidades clínicas expresamente indicadas en este documento.</li></ul><p><strong>Importante:</strong> la casilla de aceptación se encuentra en el formulario de registro; esta página sirve para consultar el contenido. La aceptación debe quedar asociada a la versión aprobada del texto.</p></div>
-<div class="signoff"><p class="subtle"><span class="pill">Versión propuesta</span> EB-2026-01-BORRADOR · Fecha de revisión: [FECHA DE APROBACIÓN]</p><p class="subtle">Marco de referencia: Ley 172-13 sobre protección de datos personales; Ley 42-01 General de Salud; disposiciones aplicables a la capacidad y protección de menores. Este texto no sustituye la revisión del asesor legal ni del responsable clínico de NUMED.</p></div>
-<a class="back" href="index.html#/registro">← Volver al registro</a>
-</article>
-<footer class="footer">NUMED · Información de salud protegida · Documento sujeto a aprobación</footer>
+
+<main class="privacy-wrap">
+
+  <img
+    class="privacy-logo"
+    src="assets/logo-numed.png"
+    alt="Logo NUMED"
+  >
+
+  <article class="privacy-card">
+
+    <div class="privacy-label">
+      NUMED CARE · Evaluación integral
+    </div>
+
+    <h1>Privacidad y consentimiento informado</h1>
+
+    <p class="privacy-intro">
+      Tu bienestar es importante para nosotros.
+      Antes de participar en la evaluación de salud
+      de NUMED, queremos explicarte de forma sencilla
+      cómo utilizaremos tu información.
+    </p>
+
+    <div class="consent-box">
+      <h2>Consentimiento de participación</h2>
+
+      <p>
+        Al participar voluntariamente en esta evaluación
+        de NUMED, autorizo la recopilación y el uso
+        confidencial de mis datos personales, respuestas
+        sobre hábitos y antecedentes de salud, y
+        mediciones físicas, para realizar mi evaluación
+        y seguimiento de salud.
+      </p>
+
+      <p>
+        Entiendo que la edad biológica es una estimación
+        orientativa del estado de salud y no constituye
+        por sí sola un diagnóstico médico, ni sustituye
+        mi edad cronológica o legal.
+      </p>
+
+      <p>
+        Mis datos serán tratados de forma confidencial
+        y podrán ser consultados por el personal
+        autorizado de NUMED. Puedo solicitar información
+        sobre su uso y ejercer mis derechos respecto
+        de mis datos personales.
+      </p>
+
+      <p>
+        Declaro que tengo 18 años o más, comprendo
+        la información proporcionada y acepto
+        participar de manera libre y voluntaria.
+      </p>
+    </div>
+
+    <h2>Más información sobre tu privacidad</h2>
+
+    <details>
+      <summary>¿Qué información recopilamos?</summary>
+      <p>
+        Nombre, apellidos, fecha de nacimiento,
+        cédula, teléfono, correo electrónico,
+        respuestas del cuestionario de salud,
+        antecedentes personales y familiares,
+        peso, talla, fuerza muscular y
+        perímetro abdominal.
+      </p>
+    </details>
+
+    <details>
+      <summary>¿Para qué utilizamos estos datos?</summary>
+      <p>
+        Para organizar la participación, realizar
+        la evaluación integral, elaborar informes,
+        facilitar su revisión por profesionales
+        autorizados y dar seguimiento clínico
+        cuando corresponda.
+      </p>
+      <p>
+        Los datos identificables no se utilizarán
+        para publicidad ni se compartirán con
+        empresas o aseguradoras para otros fines
+        sin una base legal o autorización aplicable.
+      </p>
+    </details>
+
+    <details>
+      <summary>¿Quién puede acceder a mi información?</summary>
+      <p>
+        El personal de NUMED autorizado para
+        gestionar la evaluación. Los proveedores
+        tecnológicos necesarios para operar el
+        sistema podrán tratar información bajo
+        las condiciones de protección aplicables.
+      </p>
+      <p>
+        Los resultados individuales no se mostrarán
+        públicamente mediante el código QR.
+      </p>
+    </details>
+
+    <details>
+      <summary>¿Qué significa mi edad biológica?</summary>
+      <p>
+        Es una estimación que puede utilizar
+        indicadores físicos y de salud para
+        ofrecer información orientativa.
+        Su interpretación depende del método
+        utilizado y de la evaluación profesional.
+      </p>
+      <p>
+        No modifica la edad cronológica,
+        la mayoría de edad ni la capacidad
+        jurídica de una persona.
+      </p>
+    </details>
+
+    <details>
+      <summary>¿Puedo retirar mi consentimiento?</summary>
+      <p>
+        Puedes solicitar información, acceso,
+        rectificación o supresión de tus datos
+        y retirar tu consentimiento cuando proceda,
+        conforme a las obligaciones legales
+        de conservación de información clínica.
+      </p>
+      <p>
+        La solicitud debe dirigirse a los
+        canales oficiales de NUMED.
+      </p>
+    </details>
+
+    <h2>Responsable del tratamiento</h2>
+
+    <p>
+      Responsable: NUMED, mediante su entidad
+      jurídica responsable de la atención.
+    </p>
+
+    <p>
+      Los datos de contacto para solicitudes
+      de privacidad, las condiciones de conservación
+      y los detalles de los proveedores deberán
+      estar disponibles en el aviso institucional
+      definitivo de NUMED.
+    </p>
+
+    <p class="version">
+      Versión propuesta: NUMED-EB-2026-01
+    </p>
+
+    <a class="privacy-back" href="index.html#/registro">
+      ← Volver al registro
+    </a>
+
+  </article>
+
 </main>
+
 </body>
 </html>
