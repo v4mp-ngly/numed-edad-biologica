@@ -127,8 +127,6 @@ async function setupTurnstile() {
       );
     }
 
-    // El script ya terminó de cargarse:
-    // NO utilizar turnstile.ready().
     if (
       !window.turnstile ||
       !document.getElementById('turnstile-widget')
