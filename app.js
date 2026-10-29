@@ -27,7 +27,23 @@ scriptLoad('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.8/dist/umd/s
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const $=s=>document.querySelector(s);const format=n=>Number(n).toLocaleString('es-DO',{maximumFractionDigits:1});
 const calcAge=s=>{const a=String(s).split('-').map(Number);if(a.length!==3||!a.every(Number.isFinite))return NaN;const d=new Date(a[0],a[1]-1,a[2]);if(d.getFullYear()!==a[0]||d.getMonth()!==a[1]-1||d.getDate()!==a[2])return NaN;const now=new Date();return now.getFullYear()-a[0]-(now.getMonth()<a[1]-1||now.getMonth()===a[1]-1&&now.getDate()<a[2]?1:0)};
-const route=()=>decodeURIComponent(location.hash.split('?')[0].replace('#/','')||(new URLSearchParams(location.search).get('view')==='portal'?'portal':'qr'));
+
+const route = () => {
+  const view = new URLSearchParams(location.search).get('view');
+
+  if (view === 'portal') return 'portal';
+
+  const hash = location.hash || '';
+
+  if (hash.startsWith('#/')) {
+    return decodeURIComponent(
+      hash.split('?')[0].replace('#/', '')
+    );
+  }
+
+  return 'qr';
+};
+
 const qs=()=>new URLSearchParams(location.hash.split('?')[1]||'');
 const go=r=>{if(location.hash==='#/'+r){render()}else location.hash='#/'+r};
 const toast=s=>{const t=$('#toast');t.textContent=s;t.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.remove('show'),4200)};
@@ -62,7 +78,8 @@ function photoBooth(){return `<section class="section ice"><div class="shell" st
  <article class="card"><div class="photo-stage" id="photo-stage"><div style="text-align:center;padding:50px"><img src="assets/simbolo-numed.png" style="width:96px;height:106px;object-fit:contain" alt=""/><h2>Tu momento NUMED</h2><p class="intro">Activa la cámara y crea tu foto con la identidad gráfica de NUMED.</p></div></div><div class="actions" style="justify-content:center"><button class="btn" type="button" id="start-camera">Activar cámara</button><button class="btn alt" type="button" id="capture-camera" disabled>Tomar foto</button><button class="btn lime" type="button" id="download-photo" disabled>Descargar foto</button></div><p class="hint" style="text-align:center">La cámara requiere permiso del navegador y funciona en localhost o HTTPS.</p></article></div></section>`}
 async function showQR(){const el=$('#live-qr');if(!el)return;const target=new URL(window.location.href);target.hash='/registro';if(typeof window.QRCode!=='function'){try{await scriptLoad('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js')}catch(e){console.warn('Generador QR no disponible',e)}}if(!$('#live-qr'))return;if(typeof window.QRCode==='function'){el.innerHTML='';new window.QRCode(el,{text:target.href,width:250,height:250,correctLevel:window.QRCode.CorrectLevel.H})}else{el.innerHTML='<div class="notice warn">No se cargó el generador QR. Puedes copiar el enlace y generar el QR con la herramienta incluida en el proyecto.</div>'}}
 async function loadPortal(){if(!authUser||!sb)return;await sb.rpc('eb_reclamar_portal');const {data:patients}=await sb.from('eb_pacientes').select('id').eq('user_id',authUser.id);const ids=(patients||[]).map(x=>x.id);if(!ids.length){portalRows=[];return};const {data}=await sb.from('eb_evaluaciones').select('id,creado_en,eb_resultados(edad_biologica,metodo_version,publicado_en)').in('paciente_id',ids).order('creado_en',{ascending:false});portalRows=data||[]}
-async function render(){stopCamera();const which=route();document.querySelectorAll('[data-route]').forEach(x=>x.classList.toggle('active',x.dataset.route===which));
+async function render(){stopCamera();
+   const which=route();document.querySelectorAll('[data-route]').forEach(x=>x.classList.toggle('active',x.dataset.route===which));
  if(which==='medico'||which==='medico-paciente'){if(ONLINE){await checkStaff();if(!staffUser){app.innerHTML=staffLogin();return}}medicalRows=await getStaffData()}
  if(which==='portal'&&ONLINE){await checkStaff();await loadPortal()}
  if(which==='inicio')app.innerHTML=home();else if(which==='registro')app.innerHTML=registration();else if(which==='preguntas')app.innerHTML=questions();else if(which==='completado')app.innerHTML=complete();else if(which==='medico')app.innerHTML=medical();else if(which==='medico-paciente')app.innerHTML=medicalDetail(medicalRows.find(x=>x.id===qs().get('id')));else if(which==='qr')app.innerHTML=qrPage();else if(which==='portal')app.innerHTML=portal();else if(which==='photobooth')app.innerHTML=photoBooth();else app.innerHTML=qrPage();if(which==='qr')showQR();if(which==='preguntas'&&quizIndex===QUESTIONS.length-1)setupTurnstile();if(which==='registro'&&$('#dob'))$('#dob').dispatchEvent(new Event('input',{bubbles:true}));window.scrollTo({top:0,behavior:'instant'})}
